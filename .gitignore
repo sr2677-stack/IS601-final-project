@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+venv312/
+env/
+
+# Packaging/build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test/cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Playwright artifacts
+test-results/
+playwright-report/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment/config secrets
+.env
+.env.*
+!.env.example
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker overrides/local volumes
+docker-compose.override.yml
+data/
+
+# Alembic local artifacts
+alembic/versions/__pycache__/
+
+# Node (if ever used for tooling)
+node_modules/

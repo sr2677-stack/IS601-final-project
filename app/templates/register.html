@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div style="max-width:400px;margin:4rem auto">
+  <div class="card">
+    <h2 style="margin-top:0;text-align:center">Create account</h2>
+    <p style="text-align:center;color:#71717a;font-size:.9rem;margin-top:0">Start calculating in seconds</p>
+
+    {% if error %}
+    <div style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;border-radius:6px;font-size:.875rem;margin-bottom:1rem">
+      {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="/register" novalidate id="reg-form">
+      <div style="margin-bottom:1rem">
+        <label for="username" style="display:block;font-size:.875rem;font-weight:500;margin-bottom:.375rem">
+          Username
+        </label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          autocomplete="username"
+          placeholder="choose a username"
+          minlength="3"
+          maxlength="50"
+          style="width:100%;padding:.6rem .75rem;border:1px solid #e4e4e7;border-radius:6px;font-size:.9rem;outline:none;transition:border-color .15s"
+          onfocus="this.style.borderColor='#6366f1'"
+          onblur="this.style.borderColor='#e4e4e7'"
+        >
+        <span id="username-err" style="font-size:.78rem;color:#dc2626;display:none;margin-top:.25rem">
+          Username must be at least 3 characters.
+        </span>
+      </div>
+
+      <div style="margin-bottom:1rem">
+        <label for="email" style="display:block;font-size:.875rem;font-weight:500;margin-bottom:.375rem">
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder="you@example.com"
+          style="width:100%;padding:.6rem .75rem;border:1px solid #e4e4e7;border-radius:6px;font-size:.9rem;outline:none;transition:border-color .15s"
+          onfocus="this.style.borderColor='#6366f1'"
+          onblur="this.style.borderColor='#e4e4e7'"
+        >
+        <span id="email-err" style="font-size:.78rem;color:#dc2626;display:none;margin-top:.25rem">
+          Please enter a valid email address.
+        </span>
+      </div>
+
+      <div style="margin-bottom:1rem">
+        <label for="password" style="display:block;font-size:.875rem;font-weight:500;margin-bottom:.375rem">
+          Password
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          autocomplete="new-password"
+          placeholder="••••••••"
+          minlength="8"
+          style="width:100%;padding:.6rem .75rem;border:1px solid #e4e4e7;border-radius:6px;font-size:.9rem;outline:none;transition:border-color .15s"
+          onfocus="this.style.borderColor='#6366f1'"
+          onblur="this.style.borderColor='#e4e4e7'"
+        >
+        <div id="pwd-strength" style="margin-top:.4rem;height:4px;border-radius:2px;background:#e4e4e7;overflow:hidden">
+          <div id="pwd-bar" style="height:100%;width:0;border-radius:2px;transition:width .3s,background .3s"></div>
+        </div>
+        <span id="pwd-hint" style="font-size:.78rem;color:#71717a;margin-top:.25rem;display:block">
+          At least 8 characters
+        </span>
+      </div>
+
+      <div style="margin-bottom:1.5rem">
+        <label for="confirm" style="display:block;font-size:.875rem;font-weight:500;margin-bottom:.375rem">
+          Confirm password
+        </label>
+        <input
+          id="confirm"
+          name="confirm"
+          type="password"
+          required
+          autocomplete="new-password"
+          placeholder="••••••••"
+          style="width:100%;padding:.6rem .75rem;border:1px solid #e4e4e7;border-radius:6px;font-size:.9rem;outline:none;transition:border-color .15s"
+          onfocus="this.style.borderColor='#6366f1'"
+          onblur="this.style.borderColor='#e4e4e7'"
+        >
+        <span id="confirm-err" style="font-size:.78rem;color:#dc2626;display:none;margin-top:.25rem">
+          Passwords do not match.
+        </span>
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn" style="width:100%;padding:.65rem;font-size:.95rem">
+        Create account
+      </button>
+    </form>
+
+    <p style="text-align:center;font-size:.875rem;color:#71717a;margin-bottom:0;margin-top:1.25rem">
+      Already have an account?
+      <a href="/login" style="color:#6366f1;text-decoration:none;font-weight:500">Sign in</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  const pwdInput    = document.getElementById('password');
+  const confirmInput= document.getElementById('confirm');
+  const pwdBar      = document.getElementById('pwd-bar');
+  const pwdHint     = document.getElementById('pwd-hint');
+  const confirmErr  = document.getElementById('confirm-err');
+  const usernameInput = document.getElementById('username');
+  const usernameErr = document.getElementById('username-err');
+  const emailInput  = document.getElementById('email');
+  const emailErr    = document.getElementById('email-err');
+  const form        = document.getElementById('reg-form');
+
+  // Password strength bar
+  pwdInput.addEventListener('input', () => {
+    const v = pwdInput.value;
+    let strength = 0;
+    if (v.length >= 8)  strength++;
+    if (/[A-Z]/.test(v)) strength++;
+    if (/[0-9]/.test(v)) strength++;
+    if (/[^A-Za-z0-9]/.test(v)) strength++;
+    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
+    const labels = ['Too short', 'Weak', 'Fair', 'Strong'];
+    const pct    = strength === 0 ? 0 : (strength / 4) * 100;
+    pwdBar.style.width = pct + '%';
+    pwdBar.style.background = colors[Math.max(0, strength - 1)];
+    pwdHint.textContent = v.length === 0 ? 'At least 8 characters' : labels[Math.max(0, strength - 1)];
+    pwdHint.style.color = strength >= 3 ? '#22c55e' : '#71717a';
+  });
+
+  // Confirm password match
+  confirmInput.addEventListener('input', () => {
+    confirmErr.style.display = confirmInput.value && confirmInput.value !== pwdInput.value ? 'block' : 'none';
+  });
+
+  // Client-side validation on submit
+  form.addEventListener('submit', (e) => {
+    let valid = true;
+
+    if (usernameInput.value.trim().length < 3) {
+      usernameErr.style.display = 'block';
+      usernameInput.style.borderColor = '#ef4444';
+      valid = false;
+    } else {
+      usernameErr.style.display = 'none';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+      emailErr.style.display = 'block';
+      emailInput.style.borderColor = '#ef4444';
+      valid = false;
+    } else {
+      emailErr.style.display = 'none';
+    }
+
+    if (pwdInput.value.length < 8) {
+      pwdHint.textContent = 'Password must be at least 8 characters';
+      pwdHint.style.color = '#ef4444';
+      valid = false;
+    }
+
+    if (confirmInput.value !== pwdInput.value) {
+      confirmErr.style.display = 'block';
+      valid = false;
+    }
+
+    if (!valid) e.preventDefault();
+  });
+</script>
+{% endblock %}

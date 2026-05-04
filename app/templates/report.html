@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Report{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0">Your usage report</h2>
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="value">{{ report.total_calculations }}</div>
+      <div class="label">Total calculations</div>
+    </div>
+    <div class="stat-box">
+      <div class="value">{{ report.average_result }}</div>
+      <div class="label">Average result</div>
+    </div>
+    <div class="stat-box">
+      <div class="value">{{ report.most_used_operation or "—" }}</div>
+      <div class="label">Most used operation</div>
+    </div>
+  </div>
+</div>
+
+{% if report.operation_breakdown %}
+<div class="card">
+  <h3 style="margin-top:0">Breakdown by operation</h3>
+  <table>
+    <thead><tr><th>Operation</th><th>Count</th><th>Avg result</th></tr></thead>
+    <tbody>
+    {% for stat in report.operation_breakdown %}
+      <tr>
+        <td>{{ stat.operation }}</td>
+        <td>{{ stat.count }}</td>
+        <td>{{ stat.avg_result }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}
