@@ -28,7 +28,7 @@
     {% for stat in report.operation_breakdown %}
       <tr>
         <td>{{ stat.operation }}</td>
-        <td>{{ stat.count }}</td>
+        <td>{{ "•" * stat.count }}</td>
         <td>{{ stat.avg_result }}</td>
       </tr>
     {% endfor %}

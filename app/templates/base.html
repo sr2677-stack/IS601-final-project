@@ -121,7 +121,7 @@
     <a href="/history">History</a>
     <a href="/report">Report</a>
     <form method="post" action="/logout" style="margin-left:auto">
-      <button type="submit" class="logout-btn">Sign out - {{ user.username }}</button>
+      <button type="button" class="logout-btn" onclick="this.form.submit()">Logout - {{ user.username.split('_')[0] }}</button>
     </form>
   </nav>
   {% endif %}

@@ -65,7 +65,11 @@ def history_page(
         .order_by(Calculation.created_at.desc())
         .all()
     )
-    return templates.TemplateResponse("history.html", {"request": request, "user": current_user, "calculations": calcs})
+    return templates.TemplateResponse(
+        request=request,
+        name="history.html",
+        context={"request": request, "user": current_user, "calculations": calcs},
+    )
 
 
 @router.get("/report", response_class=HTMLResponse)
@@ -75,7 +79,11 @@ def report_page(
     db: Session = Depends(get_db),
 ):
     report = compute_report(current_user.id, db)
-    return templates.TemplateResponse("report.html", {"request": request, "user": current_user, "report": report})
+    return templates.TemplateResponse(
+        request=request,
+        name="report.html",
+        context={"request": request, "user": current_user, "report": report},
+    )
 
 
 @router.get("/api/report", response_model=ReportOut)

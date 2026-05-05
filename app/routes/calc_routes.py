@@ -34,7 +34,11 @@ def perform_calculation(op: str, a: float, b: float) -> float:
 @router.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     calcs = db.query(Calculation).filter(Calculation.user_id == current_user.id).order_by(Calculation.created_at.desc()).limit(5).all()
-    return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user, "recent": calcs})
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={"request": request, "user": current_user, "recent": calcs},
+    )
 
 
 @router.post("/calculate")
