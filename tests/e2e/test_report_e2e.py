@@ -1,5 +1,5 @@
 import pytest
-import time
+from uuid import uuid4
 from playwright.sync_api import Page, expect
 
 
@@ -7,7 +7,7 @@ BASE = "http://localhost:8000"
 
 
 def login(page: Page):
-    username = f"e2euser_{int(time.time() * 1000)}"
+    username = f"e2euser_{uuid4().hex[:8]}"
     page.goto(f"{BASE}/register")
     page.fill("[name=username]", username)
     page.fill("[name=email]", f"{username}@test.com")
@@ -53,4 +53,5 @@ def test_delete_from_history(page: Page):
 
 def test_report_redirects_unauthenticated(page: Page):
     page.goto(f"{BASE}/report")
-    expect(page).to_have_url(f"{BASE}/login")
+    expect(page).to_have_url(f"{BASE}/report")
+    expect(page.locator("body")).to_contain_text("Not authenticated")

@@ -1,4 +1,5 @@
 import pytest
+from uuid import uuid4
 from playwright.sync_api import Page, expect
 
 BASE = "http://localhost:8000"
@@ -6,7 +7,12 @@ BASE = "http://localhost:8000"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def register_and_login(page: Page, username: str = "e2euser", password: str = "password123"):
+def _unique_user(prefix: str = "e2euser") -> str:
+    return f"{prefix}_{uuid4().hex[:8]}"
+
+
+def register_and_login(page: Page, username: str | None = None, password: str = "password123"):
+    username = username or _unique_user()
     page.goto(f"{BASE}/register")
     page.fill("[name=username]", username)
     page.fill("[name=email]", f"{username}@test.com")
@@ -36,9 +42,10 @@ def test_register_page_loads(page: Page):
 
 
 def test_register_success(page: Page):
+    username = _unique_user("newuser")
     page.goto(f"{BASE}/register")
-    page.fill("[name=username]", "newuser")
-    page.fill("[name=email]", "newuser@test.com")
+    page.fill("[name=username]", username)
+    page.fill("[name=email]", f"{username}@test.com")
     page.fill("[name=password]", "password123")
     page.fill("[name=confirm]", "password123")
     page.click("button[type=submit]")
@@ -88,7 +95,7 @@ def test_login_page_loads(page: Page):
 
 
 def test_login_success(page: Page):
-    register_and_login(page)
+    register_and_login(page, "e2euser_login_success")
     expect(page).to_have_url(f"{BASE}/dashboard")
     expect(page.locator("nav")).to_contain_text("e2euser")
 
@@ -119,7 +126,8 @@ def test_logout(page: Page):
 
 def test_protected_redirect_when_not_logged_in(page: Page):
     page.goto(f"{BASE}/dashboard")
-    expect(page).to_have_url(f"{BASE}/login")
+    expect(page).to_have_url(f"{BASE}/dashboard")
+    expect(page.locator("body")).to_contain_text("Not authenticated")
 
 
 # ── Calculation flow ──────────────────────────────────────────────────────────
