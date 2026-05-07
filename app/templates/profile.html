@@ -74,13 +74,14 @@
   const confirmErr = document.getElementById("confirm-err");
 
   function validatePwdMatch(strict = false) {
-    const confirmHasValue = confirmPwd.value.length > 0;
-    const readyToCompare = strict || confirmPwd.value.length >= newPwd.value.length;
-    const mismatch = confirmHasValue && readyToCompare && newPwd.value !== confirmPwd.value;
-    confirmErr.style.display = mismatch ? "block" : "none";
-    confirmPwd.style.borderColor = mismatch ? "#ef4444" : "#dbe3ef";
-    return !mismatch;
-  }
+  const confirmHasValue = confirmPwd.value.length > 0;
+  const fullyTyped = confirmPwd.value.length === newPwd.value.length; 
+  const readyToCompare = strict || fullyTyped;
+  const mismatch = confirmHasValue && readyToCompare && newPwd.value !== confirmPwd.value;
+  confirmErr.style.display = mismatch ? "block" : "none";
+  confirmPwd.style.borderColor = mismatch ? "#ef4444" : "#dbe3ef";
+  return !mismatch;
+}
 
   confirmPwd.addEventListener("input", validatePwdMatch);
   newPwd.addEventListener("input", validatePwdMatch);
