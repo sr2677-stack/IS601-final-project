@@ -24,6 +24,31 @@ class UserOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ProfileUpdate(BaseModel):
+    username: str
+    email: EmailStr
+
+    @field_validator("username")
+    @classmethod
+    def username_length(cls, v: str) -> str:
+        if len(v.strip()) < 3:
+            raise ValueError("Username must be at least 3 characters")
+        return v.strip()
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+    confirm_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def new_password_length(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("New password must be at least 8 characters")
+        return v
+
+
 # ── Calculations ──────────────────────────────────────
 ALLOWED_OPS = {"add", "subtract", "multiply", "divide", "power", "modulus"}
 

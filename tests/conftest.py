@@ -24,12 +24,17 @@ def override_get_db():
 def setup_db():
     Base.metadata.create_all(bind=engine)
     yield
+    engine.dispose()
     Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture
 def db():
-    return TestingSession()
+    session = TestingSession()
+    try:
+        yield session
+    finally:
+        session.close()
 
 
 @pytest.fixture

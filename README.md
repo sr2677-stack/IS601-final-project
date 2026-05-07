@@ -4,6 +4,7 @@ A full-stack calculator web application built with FastAPI, SQLAlchemy, and Jinj
 
 ## Features
 - User registration and login with JWT authentication
+- Profile update (username/email) and secure password change
 - Six calculator operations: add, subtract, multiply, divide, power, modulus
 - Calculation history per user
 - Usage report with stats and operation breakdown
